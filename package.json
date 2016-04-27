@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/davidtheclark/focus-trap#readme",
   "dependencies": {
-    "tabbable": "^1.0.0"
+    "tabbable": "git://github.com/pisinr/tabbable.git"
   },
   "devDependencies": {
     "browserify": "13.0.0",
