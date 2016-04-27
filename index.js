@@ -103,7 +103,10 @@ function isTabKey(e) {
 
 function isEnterKey(e) {
   if (e.key === 'Enter' || e.keyCode == 13) {
-    return true
+    var target = e.target;
+    if (target.type != 'submit' && target.type != 'button') {
+      return true
+    }
   }
 }
 
