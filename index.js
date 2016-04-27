@@ -94,8 +94,19 @@ function checkFocus(e) {
   e.target.blur();
 }
 
+function isTabKey(e) {
+  if (e.key === 'Tab' || e.keyCode == 9) {
+    return true
+  }
+}
+var isTabAction = isTabKey;
+
+function setTabActionCheck(func) {
+  isTabAction = func || isTabKey;
+}
+
 function checkKey(e) {
-  if (e.key === 'Tab' || e.keyCode === 9) {
+  if (isTabAction(e)) {
     handleTab(e);
   }
 
@@ -144,4 +155,6 @@ function isEscapeEvent(e) {
 module.exports = {
   activate: activate,
   deactivate: deactivate,
+  handleTab: handleTab,
+  setTabActionCheck: setTabActionCheck
 };
