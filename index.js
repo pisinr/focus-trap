@@ -5,6 +5,11 @@ var tabbableNodes;
 var previouslyFocused;
 var activeFocusTrap;
 var config;
+var defaultTabMode = "tab";
+
+function setDefaultTabMode(tabMode) {
+  defaultTabMode = tabMode || "tab";
+}
 
 function activate(element, options) {
   // There can be only one focus trap at a time
@@ -16,7 +21,7 @@ function activate(element, options) {
     : element;
 
   config = options || {};
-  config.tabMode = (config.tabMode || 'tab').toLowerCase();
+  config.tabMode = (config.tabMode || defaultTabMode).toLowerCase();
 
   previouslyFocused = document.activeElement;
 
@@ -140,11 +145,6 @@ function isArrowNavKey(e) {
   }
 }
 
-function isTabAction(e) {
-  var check = false;
-  return isAction;
-}
-
 function checkKey(e) {
   if (config.tabMode.indexOf('tab') >= 0 && isTabKey(e)) {
     handleTab(e);
@@ -156,9 +156,6 @@ function checkKey(e) {
       handleTab(e, arrowNav == -1);
     }
   }
-  // if (isTabAction(e)) {
-  //   handleTab(e);
-  // }
 
   if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
     deactivate();
@@ -206,4 +203,5 @@ module.exports = {
   activate: activate,
   deactivate: deactivate,
   handleTab: handleTab,
+  setDefaultTabMode: setDefaultTabMode,
 };
