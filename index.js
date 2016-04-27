@@ -116,18 +116,22 @@ function isInputTag(elm) {
 function isArrowNavKey(e) {
   if (e.keyCode == 37 && !e.shiftKey) {
     var target = e.target;
-    var isInput = isInputTag(target);
-    if (isInput
-      && (target.selectionStart == target.selectionEnd)
-      && (target.selectionStart == 0)) {
-      return -1
+    if (isInputTag(target)) {
+      if ((target.selectionStart == target.selectionEnd)
+        && (target.selectionStart == 0)) {
+        return -1
+      }
+    } else {
+      return -1;
     }
   } else if (e.keyCode == 39  && !e.shiftKey) {
     var target = e.target;
-    var isInput = isInputTag(target);
-    if (isInput
-      && (target.selectionStart == target.selectionEnd)
-      && (target.selectionStart == ("" + target.value).length)) {
+    if (isInputTag(target)) {
+      if ((target.selectionStart == target.selectionEnd)
+        && (target.selectionStart == ("" + target.value).length)) {
+        return 1;
+      }
+    } else {
       return 1;
     }
   }
