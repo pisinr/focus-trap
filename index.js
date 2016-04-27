@@ -16,6 +16,7 @@ function activate(element, options) {
     : element;
 
   config = options || {};
+  config.tabMode = (config.tabMode || 'tab').toLowerCase();
 
   previouslyFocused = document.activeElement;
 
@@ -99,29 +100,71 @@ function isTabKey(e) {
     return true
   }
 }
-var isTabAction = isTabKey;
 
-function setTabActionCheck(func) {
-  isTabAction = func || isTabKey;
+function isEnterKey(e) {
+  if (e.key === 'Enter' || e.keyCode == 13) {
+    return true
+  }
+}
+
+function isInputTag(elm) {
+  var tagName = ("" + elm.tagName).toLowerCase();
+  var inputTypes = ["text", "password", "number", "tel"];
+  return (tagName == "input") && (inputTypes.indexOf(elm.type) >= 0);
+}
+
+function isArrowNavKey(e) {
+  if (e.keyCode == 37 && !e.shiftKey) {
+    var target = e.target;
+    var isInput = isInputTag(target);
+    if (isInput
+      && (target.selectionStart == target.selectionEnd)
+      && (target.selectionStart == 0)) {
+      return -1
+    }
+  } else if (e.keyCode == 39  && !e.shiftKey) {
+    var target = e.target;
+    var isInput = isInputTag(target);
+    if (isInput
+      && (target.selectionStart == target.selectionEnd)
+      && (target.selectionStart == ("" + target.value).length)) {
+      return 1;
+    }
+  }
+}
+
+function isTabAction(e) {
+  var check = false;
+  return isAction;
 }
 
 function checkKey(e) {
-  if (isTabAction(e)) {
+  if (config.tabMode.indexOf('tab') >= 0 && isTabKey(e)) {
     handleTab(e);
+  } else if (config.tabMode.indexOf('enter') >= 0 && isEnterKey(e)) {
+    handleTab(e);
+  } else if (config.tabMode.indexOf('arrow') >= 0) {
+    var arrowNav = isArrowNavKey(e);
+    if (arrowNav) {
+      handleTab(e, arrowNav == -1);
+    }
   }
+  // if (isTabAction(e)) {
+  //   handleTab(e);
+  // }
 
   if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
     deactivate();
   }
 }
 
-function handleTab(e) {
+function handleTab(e, forceReverse) {
   e.preventDefault();
   updateTabbableNodes();
   var currentFocusIndex = tabbableNodes.indexOf(e.target);
   var lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
   var firstTabbableNode = tabbableNodes[0];
-  if (e.shiftKey) {
+  if (e.shiftKey || forceReverse) {
     if (e.target === firstTabbableNode) {
       tryFocus(lastTabbableNode);
       return;
@@ -156,5 +199,4 @@ module.exports = {
   activate: activate,
   deactivate: deactivate,
   handleTab: handleTab,
-  setTabActionCheck: setTabActionCheck
 };
